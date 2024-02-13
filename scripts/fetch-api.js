@@ -185,6 +185,7 @@ async function getSwaggerConfig(localSwaggerPath, spec, dist) {
 
 	// Downloads swagger.conf from LOCAL or ARTIFACTORY
 	await getSwaggerConfig(LOCAL_GENERATED_API_PATH, CLOUD_SPEC_NAME, 'cloud');
-	await getSwaggerConfig(LOCAL_PREMISE_GENERATED_API_PATH, PREMISE_SPEC_NAME, 'premise');
+	// TODO: Open when on-premise will be release to public
+	// await getSwaggerConfig(LOCAL_PREMISE_GENERATED_API_PATH, PREMISE_SPEC_NAME, 'premise');
 	await getSwaggerConfig(LOCAL_SAAS_GENERATED_API_PATH, SAAS_SPEC_NAME, 'saas');
 })();

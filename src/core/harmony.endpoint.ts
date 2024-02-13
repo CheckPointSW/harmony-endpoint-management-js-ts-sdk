@@ -1,8 +1,9 @@
 /* eslint-disable max-classes-per-file */
 import { HarmonyEndpointBase as HarmonyEndpointCloudBase } from '../generated/cloud/swagger/api';
-import { HarmonyEndpointBase as HarmonyEndpointPremiseBase } from '../generated/premise/swagger/api';
+// TODO: Open when on-premise will be release to public
+// import { HarmonyEndpointBase as HarmonyEndpointPremiseBase } from '../generated/premise/swagger/api';
 import { HarmonyEndpointBase as HarmonyEndpointSaasBase } from '../generated/saas/swagger/api';
-import { HarmonyEndpointSaaSOptions, InfinityPortalAuth, OnPremisePortalAuth } from '../inerfaces/infta';
+import { HarmonyEndpointSaaSOptions, InfinityPortalAuth } from '../inerfaces/infta';
 
 export class HarmonyEndpoint extends HarmonyEndpointCloudBase {
 	constructor() {
@@ -42,19 +43,20 @@ export class HarmonyEndpointSaaS extends HarmonyEndpointSaasBase {
 	}
 }
 
-export class HarmonyEndpointPremise extends HarmonyEndpointPremiseBase {
-	constructor() {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`This API is currently under development. Please make sure you know what you are doing!!! For any question contact us at harmony-endpoint-external-api@checkpoint.com`
-		);
-		super('HarmonyEndpointPremise');
-	}
+// TODO: Open when on-premise will be release to public
+// export class HarmonyEndpointPremise extends HarmonyEndpointPremiseBase {
+// 	constructor() {
+// 		// eslint-disable-next-line no-console
+// 		console.warn(
+// 			`This API is currently under development. Please make sure you know what you are doing!!! For any question contact us at harmony-endpoint-external-api@checkpoint.com`
+// 		);
+// 		super('HarmonyEndpointPremise');
+// 	}
 
-	public async connect(onPremisePortalAuth: OnPremisePortalAuth) {
-		await this.sessionManager.connectPremise(onPremisePortalAuth, {
-			keepAliveOperation: () => this.SessionApi.keepAlive() as any,
-			loginOperation: () => this.SessionApi.loginPremise({ username: onPremisePortalAuth.username, password: onPremisePortalAuth.password }) as any,
-		});
-	}
-}
+// 	public async connect(onPremisePortalAuth: OnPremisePortalAuth) {
+// 		await this.sessionManager.connectPremise(onPremisePortalAuth, {
+// 			keepAliveOperation: () => this.SessionApi.keepAlive() as any,
+// 			loginOperation: () => this.SessionApi.loginPremise({ username: onPremisePortalAuth.username, password: onPremisePortalAuth.password }) as any,
+// 		});
+// 	}
+// }
