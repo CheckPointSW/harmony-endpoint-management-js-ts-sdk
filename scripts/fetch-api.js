@@ -15,17 +15,21 @@ if (fs.existsSync('./.env')) {
 // The API owner
 const API_SPEC_OWNER = 'Check-Point';
 
-console.log(`[fetch-api] Set ${process.env.CI_COMMIT_REF_NAME} as CI/CD branch`);
+const BRANCH_NAME = process.env.CI_COMMIT_REF_NAME || process.env.BRANCH_NAME;
+
+console.log(`[fetch-api] Set ${BRANCH_NAME} as CI/CD branch`);
+console.log(`[fetch-api] Set ${process.env.BUILD_JOB_ID} as CI/CD job id`);
+
 
 // #region Commons
 // Build API based on develop branch, unless it's build for main branch, then use main branch API.
-const CLOUD_SPEC_NAME = process.env.CLOUD_SPEC_NAME ||   'web-mgmt-external-api-production';
-const PREMISE_SPEC_NAME = process.env.PREMISE_SPEC_NAME ||   'web-mgmt-external-api-premise';
-const SAAS_SPEC_NAME = process.env.SAAS_SPEC_NAME ||   'harmony-endpoint-cloud-api-prod';
+const CLOUD_SPEC_NAME = process.env.CLOUD_SPEC_NAME || 'web-mgmt-external-api-production';
+const PREMISE_SPEC_NAME = process.env.PREMISE_SPEC_NAME || 'web-mgmt-external-api-premise';
+const SAAS_SPEC_NAME = process.env.SAAS_SPEC_NAME || 'harmony-endpoint-cloud-api-prod';
 
-console.log(`[fetch-api] The spec for cloud is ${CLOUD_SPEC_NAME} for "${process.env.CI_COMMIT_REF_NAME}"`);
-console.log(`[fetch-api] The spec for premise is ${PREMISE_SPEC_NAME} for "${process.env.CI_COMMIT_REF_NAME}"`);
-console.log(`[fetch-api] The spec for saas is ${SAAS_SPEC_NAME} for "${process.env.CI_COMMIT_REF_NAME}"`);
+console.log(`[fetch-api] The spec for cloud is ${CLOUD_SPEC_NAME} for "${BRANCH_NAME}"`);
+console.log(`[fetch-api] The spec for premise is ${PREMISE_SPEC_NAME} for "${BRANCH_NAME}"`);
+console.log(`[fetch-api] The spec for saas is ${SAAS_SPEC_NAME} for "${BRANCH_NAME}"`);
 
 
 const LOCAL_GENERATED_API_PATH = process.env.LOCAL_GENERATED_API_PATH;
@@ -42,6 +46,16 @@ if (LOCAL_PREMISE_GENERATED_API_PATH) {
 
 if (LOCAL_SAAS_GENERATED_API_PATH) {
 	console.log(`[fetch-api] Generating SaaS API using local generated API ...`);
+}
+
+const SWAGGERHUB_API_KEY = process.env.SWAGGERHUB_API_KEY;
+
+const swaggerHeaders = {
+	'Content-Type': 'application/json',
+};
+
+if (SWAGGERHUB_API_KEY) {
+	swaggerHeaders.Authorization = `Bearer ${SWAGGERHUB_API_KEY}`;
 }
 
 
@@ -87,9 +101,7 @@ async function downloadSpec(spec) {
 	// Fetch all available versions from SwaggerHub API
 	const allSpecsRes = await nodeFetch(`https://api.swaggerhub.com/apis/${API_SPEC_OWNER}/${spec}`, {
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers: swaggerHeaders,
 	});
 	// Get info as JSON
 	const allSpecs = await allSpecsRes.json();
@@ -105,9 +117,7 @@ async function downloadSpec(spec) {
 	// Fetch the spec
 	const latestSpecRes = await nodeFetch(latestVersionUrl, {
 		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		headers: swaggerHeaders,
 	});
 	// Get spec as JSON
 	const latestSpec = await latestSpecRes.json();

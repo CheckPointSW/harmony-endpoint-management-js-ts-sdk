@@ -22,8 +22,6 @@ function replaceStringInFile(filePath, searchStr, replaceStr) {
 	fs.writeFileSync(filePath, data, 'utf8');
 }
   
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
 console.log(`[post-generate-api] Removing index.ts from the generated file, to avoid circular dependencies`);
 const OUTPUT_BASE_PATH = 'src/generated';
 
