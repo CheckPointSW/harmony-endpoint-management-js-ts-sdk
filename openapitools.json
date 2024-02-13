@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "6.6.0",
+    "generators": {
+      "typescriptCloudStub": {
+        "generatorName": "typescript-axios",
+        "output": "#{cwd}/src/generated/cloud/#{name}/",
+        "glob": "src/generated/specs/cloud/**/*.*",
+        "additionalProperties": {
+          "withInterfaces": true,
+          "typescriptThreePlus": true
+        },
+        "templateDir": "#{cwd}/resources/typescript-axios",
+        "typeMappings": "DateTime=Date"
+      },
+      "typescriptPremiseStub": {
+        "generatorName": "typescript-axios",
+        "output": "#{cwd}/src/generated/premise/#{name}/",
+        "glob": "src/generated/specs/premise/**/*.*",
+        "additionalProperties": {
+          "withInterfaces": true,
+          "typescriptThreePlus": true
+        },
+        "templateDir": "#{cwd}/resources/typescript-axios",
+        "typeMappings": "DateTime=Date"
+      },
+      "typescriptSaaSStub": {
+        "generatorName": "typescript-axios",
+        "output": "#{cwd}/src/generated/saas/#{name}/",
+        "glob": "src/generated/specs/saas/**/*.*",
+        "additionalProperties": {
+          "withInterfaces": true,
+          "typescriptThreePlus": true
+        },
+        "templateDir": "#{cwd}/resources/typescript-axios",
+        "typeMappings": "DateTime=Date"
+      }
+    }
+  }
+}
