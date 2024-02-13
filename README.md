@@ -5,7 +5,7 @@
 
 **This package is currently in EA (Early Availability) stage. Use with caution, as it may undergo significant changes and improvements. Feedback and contributions are highly encouraged.** 
 
-To report a bug, please go to [Report Bug](#-report-bug).
+To report a bug, please go to [Report Bug](#-report-bug)
 
 For feedbacks please contact us at [Check Point Software Technologies Ltd.](harmony-endpoint-external-api@checkpoint.com)
 
