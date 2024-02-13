@@ -1,6 +1,6 @@
 {
   "name": "@chkp/harmony-endpoint-management-sdk",
-  "version": "1.0.92",
+  "version": "1.0.94",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
