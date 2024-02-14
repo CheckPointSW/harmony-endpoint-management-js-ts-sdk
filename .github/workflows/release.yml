@@ -15,6 +15,5 @@ jobs:
           scope: '@octocat'
       - run: yarn
       - run: npm publish --access public
-      - run: yarn build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

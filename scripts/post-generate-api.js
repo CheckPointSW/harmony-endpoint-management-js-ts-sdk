@@ -2,7 +2,6 @@
 /* eslint-disable no-multi-str */
 /* eslint-disable import/no-extraneous-dependencies */
 const fs = require('fs');
-const path = require('path');
 const dotenv = require('dotenv');
 
 if (fs.existsSync('./.env')) {

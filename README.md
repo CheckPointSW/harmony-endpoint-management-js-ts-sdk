@@ -192,5 +192,6 @@ DEBUG="harmony-endpoint-management:network"
 In case of issue or a bug found in the SDK, please open an [issue](https://github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk/issues) or report to us [Check Point Software Technologies Ltd](harmony-endpoint-external-api@checkpoint.com).
 
 ## 🤝 Contributors 
-- Haim Kastner - [haimk](haimk@checkpoint.com)
-- Yuval Pomerchik - [yuvalpo](yuvalpo@checkpoint.com)
+- Haim Kastner - [haimk](https://github.com/chkp-haimk)
+- Yuval Pomerchik - [yuvalpo](https://github.com/chkp-yuvalpo)
+- Oren Efraim - [orenef](https://github.com/chkp-orenef)
