@@ -1,7 +1,7 @@
 {
   "name": "@chkp/harmony-endpoint-management-sdk",
-  "version": "1.1.13",
-  "description": "",
+  "version": "1.1.16",
+  "description": "The official Harmony Endpoint management SDK for JavaScript echo-system",
   "main": "dist/index.js",
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@gitlab.locsec.net:ep-security-application/harmony-endpoint-management-js-ts-sdk.git"
+    "url": "git@github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk.git"
   },
   "keywords": [],
   "author": "Haim Kastner",
