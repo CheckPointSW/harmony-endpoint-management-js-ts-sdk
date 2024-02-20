@@ -1,27 +1,27 @@
-# CheckPoint - Harmony Endpoint Management JS-TS SDK
+# Check Point - Harmony Endpoint Management JS-TS SDK
+
+This is the Harmony Endpoint management SDK for JavaScript ecosystem.
+
+The SDK is based on the public [Harmony Endpoint management OpenAPI](https://app.swaggerhub.com/apis/Check-Point/web-mgmt-external-api-production) specifications.
+
+The SDK fully supports TypeScript interfaces in parameters and responses.
+
+With the SDK, you do not have to manage log in, send keep alive requests, worry about session expiration or pull long processing jobs.
+
+> 💡 The Harmony Endpoint SDK supports simultaneous instances with different tenants.
 
 ---
 🚧🚧🚧 
 
-**This package is currently in EA (Early Availability) stage. Use with caution, as it may undergo significant changes and improvements. Feedback and contributions are highly encouraged.** 
+**Note that the SDK package is in Early Availability (EA). Use with caution, as it may undergo changes and improvements. Feedback and contributions are highly encouraged.** 
 
 To report a bug, please go to [Report Bug](#-report-bug)
 
-For feedback please get in touch with us at [Check Point Software Technologies Ltd.](mailto:harmony-endpoint-external-api@checkpoint.com)
+For feedback, please get in touch with us at [Check Point Software Technologies Ltd.](mailto:harmony-endpoint-external-api@checkpoint.com)
 
 🚧🚧🚧 
 
 ---
-
-The official Harmony Endpoint management SDK for JavaScript echo-system.
-
-The SDK is based on the public [Harmony Endpoint management OpenAPI](https://app.swaggerhub.com/apis/Check-Point/web-mgmt-external-api-production) spec.
-
-The SDK is straightforward to use with full TypeScript interface support in parameters and responses.
-
-Using the SDK, no need to perform logins, send keep-alive requests, worry about session expiration or handle long processing jobs pulling, all is managed by the SDK.
-
-> 💡 The SDK supports parallel instances to different tenants.
 
 ## ⬇️ SDK installation
 
@@ -46,9 +46,9 @@ import { HarmonyEndpoint } from "@chkp/harmony-endpoint-management-sdk";
 
 Then, create a new instance of `HarmonyEndpoint`, which provides CloudInfra API credentials and a gateway to connect to.
 
-To obtain CloudInfra credentials, open the Infinity Portal and create a suitable API Key. make sure in the `Service` field to enter `Endpoint`, for more information, refer to [Infinity Portal Administration Guide](https://sc1.checkpoint.com/documents/Infinity_Portal/WebAdminGuides/EN/Infinity-Portal-Admin-Guide/Content/Topics-Infinity-Portal/API-Keys.htm?tocpath=Global%20Settings%7C_____7#API_Keys).
+To obtain CloudInfra credentials, open the Infinity Portal and create a suitable API Key. Make sure to select `Endpoint` in the `Service` field. For more information, see [Infinity Portal Administration Guide](https://sc1.checkpoint.com/documents/Infinity_Portal/WebAdminGuides/EN/Infinity-Portal-Admin-Guide/Content/Topics-Infinity-Portal/API-Keys.htm?tocpath=Global%20Settings%7C_____7#API_Keys).
 
-Once the Client ID, Secret Key, and Authentication URL are obtained, Harmony Endpoint SDK can be started to be used.
+Once the Client ID, Secret Key, and Authentication URL are obtained, Harmony Endpoint SDK can be used.
 
 All API operations can be explored with the `HarmonyEndpoint` instance.
 
@@ -76,7 +76,7 @@ console.log(rulesMetadataRes.payload); // Your rulebase metadata
 // Also you can query this operation using a job, no extra logic is required, in the background, it will trigger a job and will pull the status till it is finished and return the final results.
 const rulesMetadataJobRes: HarmonyResponse<Array<EndpointInterfaces.RuleMetadata>> = await he.PolicyGeneralApi.getAllRulesMetadata(EndpointInterfaces.RunAsJob.On);
 console.log(rulesMetadataJobRes.isJob); // true
-console.log(rulesMetadataJobRes.payload); // Your rulebase metadata, same as in non-kob operation
+console.log(rulesMetadataJobRes.payload); // Your rulebase metadata, same as in non-job operation
 
 // After you finish, disconnect to stop all background session management. 
 await he.disconnect(); 
@@ -149,13 +149,13 @@ API available at [SwaggerHub](https://app.swaggerhub.com/apis/Check-Point/harmon
 
 ##  📦 Versioning
 
-While using cloud services it's recommended to always update to the latest published SDK version.
+While using cloud services, it's recommended to constantly update to the latest published SDK version.
 
-For on-premises, it's recommended to lock the version to the version that matches the running Endpoint service version and update it only after the Endpoint services upgrade.
+For on-premises, it's recommended to align the versions of the SDK and the Harmony Endpoint Management service.
 
-The matching SDK's add command can be seen in the web portal at `Harmony Endpoint` -> `Settings` -> `API & SDKs`.
+You can view the matching SDK's pulling command from the Harmony Endpoint Web Management Portal - `Settings` > `API & SDKs`.
 
-The adding command will be similar to:
+The command will be similar to:
 ```
 yarn add @chkp/harmony-endpoint-management-sdk@1.0.11-JHF-R81_20_JHF_DEV_T154
 ```
