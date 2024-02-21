@@ -1,6 +1,6 @@
 {
   "name": "@chkp/harmony-endpoint-management-sdk",
-  "version": "1.1.28",
+  "version": "1.1.30",
   "description": "The official Harmony Endpoint management SDK for JavaScript echo-system",
   "main": "dist/index.js",
   "scripts": {
@@ -18,8 +18,31 @@
     "type": "git",
     "url": "git@github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk.git"
   },
-  "keywords": [],
-  "author": "Haim Kastner",
+  "keywords": [
+    "checkpoint",
+    "harmony",
+    "endpoint",
+    "sdk",
+    "typescript",
+    "javascript"
+  ],
+  "author": {
+    "name": "Haim Kastner",
+    "email": "haimk@checkpoint.com",
+    "url": "https://github.com/chkp-haimk"
+  },
+  "contributors": [
+    {
+      "name": "Haim Kastner",
+      "email": "haimk@checkpoint.com",
+      "url": "https://github.com/chkp-haimk"
+    },
+    {
+      "name": "Yuval Pomerchik",
+      "email": "yuvalpo@checkpoint.com",
+      "url": "https://github.com/chkp-yuvalpo"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "debug": "^4.3.4",
@@ -32,7 +55,6 @@
     "@openapitools/openapi-generator-cli": "^2.7.0",
     "@types/chai": "^4.2.20",
     "@types/debug": "^4.1.8",
-    "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^8.2.3",
     "@types/node": "^20.5.7",
     "@types/node-fetch": "^2.6.4",
