@@ -1,7 +1,7 @@
 {
   "name": "@chkp/harmony-endpoint-management-sdk",
-  "version": "1.1.30",
-  "description": "The official Harmony Endpoint management SDK for JavaScript echo-system",
+  "version": "1.1.32",
+  "description": "The official Harmony Endpoint management SDK for JavaScript echosystem",
   "main": "dist/index.js",
   "scripts": {
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0",

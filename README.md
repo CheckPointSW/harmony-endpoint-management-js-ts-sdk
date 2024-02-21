@@ -1,6 +1,6 @@
 # Check Point - Harmony Endpoint Management JS-TS SDK
 
-[![License](https://img.shields.io/github/license/CheckPointSW/harmony-endpoint-management-js-ts-sdk.svg)](https://github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk/blob/main/LICENSE) [![Latest Release](https://img.shields.io/github/v/release/CheckPointSW/harmony-endpoint-management-js-ts-sdk)](https://github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk/releases) [![npm version](https://img.shields.io/npm/v/@chkp/harmony-endpoint-management-sdk.svg?style=flat)](https://www.npmjs.com/package/@chkp/harmony-endpoint-management-sdk)
+[![License](https://img.shields.io/github/license/CheckPointSW/harmony-endpoint-management-js-ts-sdk.svg)](https://github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk/blob/release/LICENSE) [![Latest Release](https://img.shields.io/github/v/release/CheckPointSW/harmony-endpoint-management-js-ts-sdk)](https://github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk/releases) [![npm version](https://img.shields.io/npm/v/@chkp/harmony-endpoint-management-sdk.svg)](https://www.npmjs.com/package/@chkp/harmony-endpoint-management-sdk)
 
 <!-- 
 Coming soon :)
