@@ -1,7 +1,7 @@
 import { Duration, DurationUnits } from 'unitsnet-js';
 // eslint-disable-next-line import/no-cycle
 import { JobStatus } from '../generated/cloud/swagger/api'; // DO NOT IMPORT LOGICAL VARS!!! - This is a cycle import, and it works only due to importing TS interface only, that has no affect on runtime.
-import { HarmonyError, HarmonyErrorScope, HarmonyResponse } from '../inerfaces/infta';
+import { HarmonyError, HarmonyErrorScope, HarmonyResponse } from '../interfaces/infra';
 import { sleep } from './common';
 import { JOBS_PULLING_INTERVAL, MAX_FAILED_PULLING_ATTEMPTS } from './sdk.platform';
 import { errorLogger, logger } from './debug.logger';

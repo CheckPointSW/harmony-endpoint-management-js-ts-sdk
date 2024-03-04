@@ -12,13 +12,13 @@ import { Guid } from 'guid-typescript';
 import { Configuration } from "./configuration";
 
 {{! TEMPLATE EDIT: import session object type  }}
-import { HarmonyError, HarmonyErrorScope, SDKConnectionState, InfinityPortalAuth, HarmonyRequestOptions, HarmonyResponse, HarmonyEndpointOptions, HarmonyEndpointSDKInfo } from "../../../inerfaces/infta";
+import { HarmonyError, HarmonyErrorScope, SDKConnectionState, InfinityPortalAuth, HarmonyRequestOptions, HarmonyResponse, HarmonyEndpointOptions, HarmonyEndpointSDKInfo } from "../../../interfaces/infra";
 import { SessionManager } from "../../../core/session.manager";
 import { JobManager } from "../../../core/jobs.management";
 import { logger, errorLogger, networkLogger } from "../../../core/debug.logger";
 import { RUNNING_ENV } from "../../../core/sdk.platform";
 import { parseFetchError } from "../../../core/common";
-import { HarmonyRequestSession } from "../../../inerfaces/core";
+import { HarmonyRequestSession } from "../../../interfaces/core";
 
 const swagger = require('../swagger.json');
 const packageJson = require('../../../../package.json');
