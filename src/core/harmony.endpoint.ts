@@ -3,7 +3,7 @@ import { HarmonyEndpointBase as HarmonyEndpointCloudBase } from '../generated/cl
 // TODO: Open when on-premise will be release to public
 // import { HarmonyEndpointBase as HarmonyEndpointPremiseBase } from '../generated/premise/swagger/api';
 import { HarmonyEndpointBase as HarmonyEndpointSaasBase } from '../generated/saas/swagger/api';
-import { HarmonyEndpointSaaSOptions, InfinityPortalAuth } from '../inerfaces/infta';
+import { HarmonyEndpointSaaSOptions, InfinityPortalAuth } from '../interfaces/infra';
 
 export class HarmonyEndpoint extends HarmonyEndpointCloudBase {
 	constructor() {

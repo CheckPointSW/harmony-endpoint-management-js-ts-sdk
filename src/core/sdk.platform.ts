@@ -1,5 +1,5 @@
 import { Duration } from 'unitsnet-js';
-import { InfinityPortalRegion } from '../inerfaces/infta';
+import { InfinityPortalRegion } from '../interfaces/infra';
 
 type ENV = 'STG' | 'PROD';
 

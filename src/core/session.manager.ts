@@ -13,10 +13,10 @@ import {
 	HarmonyErrorScope,
 	OnPremisePortalAuth,
 	HarmonyEndpointSaaSOptions,
-} from '../inerfaces/infta';
+} from '../interfaces/infra';
 import { errorLogger, logger } from './debug.logger';
 import { parseFetchError } from './common';
-import { ISessionManager } from '../inerfaces/core';
+import { ISessionManager } from '../interfaces/core';
 
 const CI_APPLICATION_PATH = '/app/endpoint-web-mgmt';
 const EXTERNAL_API_BASE_PATH = '/harmony/endpoint/api';

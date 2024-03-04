@@ -1,7 +1,7 @@
 import { Duration } from 'unitsnet-js';
-import { HarmonyError, HarmonyErrorScope } from '../inerfaces/infta';
+import { HarmonyError, HarmonyErrorScope } from '../interfaces/infra';
 import { networkLogger, errorLogger } from './debug.logger';
-import { HarmonyRequestSession } from '../inerfaces/core';
+import { HarmonyRequestSession } from '../interfaces/core';
 
 export async function sleep(duration: Duration) {
 	return new Promise<void>((resolve) => {
