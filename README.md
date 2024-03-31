@@ -165,7 +165,7 @@ While using cloud services, it's recommended to constantly update to the latest 
 
 For on-premises, it's recommended to align the versions of the SDK and the Harmony Endpoint Management service.
 
-You can view the matching SDK's pulling command from the Harmony Endpoint Web Management Portal - `Settings` > `API & SDKs`.
+You can view the matching SDK's pulling command from the Harmony Endpoint Web Management Portal - `Settings` > `Developer Tools`.
 
 The command will be similar to:
 ```
