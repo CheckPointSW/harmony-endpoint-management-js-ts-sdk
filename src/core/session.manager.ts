@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import { Guid } from 'guid-typescript';
 import { Duration } from 'unitsnet-js';
 import { Agent } from 'https';
+import jsonwebtoken, { JwtPayload } from 'jsonwebtoken';
 import { CI_GATEWAY, KEEP_ALIVE_INTERVAL, KEEP_ALIVE_PERFORM_GRACE, MSSP_KEEP_ALIVE_EXPIRATION, RUNNING_ENV } from './sdk.platform';
 import {
 	SDKConnectionState,
@@ -34,6 +35,8 @@ export interface SessionOperations {
 }
 
 export class SessionManager implements ISessionManager {
+	//#region Members
+
 	private harmonySession: HarmonySession = {
 		sessionId: Guid.create().toString(),
 		infinityToken: '',
@@ -61,7 +64,7 @@ export class SessionManager implements ISessionManager {
 	/** The endpoint service token expiration */
 	private nextEndpointSessionExpiration: Duration | undefined;
 
-	/** The mssp service token expiration */
+	/** The MSSP service token expiration */
 	private nextMssPSessionExpiration: Duration | undefined;
 
 	/** The endpoint service token uses CI token expiration (endpoint token can be valid as long as CI token is valid, and no more) */
@@ -70,6 +73,10 @@ export class SessionManager implements ISessionManager {
 	private keepAliveRunning: boolean = false;
 
 	private dedicatedHttpAgent: Agent | undefined;
+
+	//#endregion Members
+
+	//#region Accessors
 
 	public get baseURL(): string {
 		if (this.workMode === WorkMode.PREMISE) {
@@ -84,6 +91,126 @@ export class SessionManager implements ISessionManager {
 	public get httpAgent(): Agent | undefined {
 		return this.dedicatedHttpAgent;
 	}
+
+	//#endregion Accessors
+
+	//#region Publics
+
+	/**
+	 * Gets the SDK's current connection state
+	 *
+	 * @returns {SDKConnectionState}
+	 * @memberof SessionManager
+	 */
+	public connectionState(): SDKConnectionState {
+		return this.connectionStats;
+	}
+
+	/**
+	 * Connects to a cloud-based Harmony Endpoint Management service
+	 *
+	 * @param {InfinityPortalAuth} infinityPortalAuth The parameters used to authenticate against Infinity Portal
+	 * @param {SessionOperations} sessionOperations
+	 * @memberof SessionManager
+	 */
+	public async connectCloud(infinityPortalAuth: InfinityPortalAuth, sessionOperations: SessionOperations) {
+		this.workMode = WorkMode.CLOUD;
+		this.validateCloudParams(infinityPortalAuth);
+
+		this.infinityPortalAuth = infinityPortalAuth;
+		this.sessionOperations = sessionOperations;
+
+		this.url = infinityPortalAuth.gateway || CI_GATEWAY[RUNNING_ENV][infinityPortalAuth?.region || InfinityPortalRegion.EU_IRELAND];
+
+		logger(`New cloud session started, session id ${this.harmonySession.sessionId} connecting to ${this.url} using client id ${infinityPortalAuth.clientId}`);
+
+		await this.performCiLogin();
+		await this.performEndpointLogin();
+		this.activateKeepAlive();
+	}
+
+	public async connectSaas(infinityPortalAuth: InfinityPortalAuth, sessionOperations: SessionOperations, saaSOptions: HarmonyEndpointSaaSOptions) {
+		this.saaSOptions = saaSOptions;
+		this.sessionOperations = sessionOperations;
+		this.workMode = WorkMode.SAAS;
+		this.validateCloudParams(infinityPortalAuth);
+
+		this.infinityPortalAuth = infinityPortalAuth;
+
+		this.url = infinityPortalAuth.gateway || CI_GATEWAY[RUNNING_ENV][infinityPortalAuth?.region || InfinityPortalRegion.EU_IRELAND];
+
+		logger(
+			`New SaaS session started *${this.saaSOptions.activateMssPSession ? 'with' : 'without'}* MSSP session mgmt, session id ${
+				this.harmonySession.sessionId
+			} connecting to ${this.url} using client id ${infinityPortalAuth.clientId}`
+		);
+
+		await this.performCiLogin();
+		if (this.saaSOptions.activateMssPSession) {
+			await this.performMsspLogin();
+		}
+		this.activateKeepAlive();
+	}
+
+	public async connectPremise(onPremisePortalAuth: OnPremisePortalAuth, sessionOperations: SessionOperations) {
+		this.workMode = WorkMode.PREMISE;
+		this.validatePremiseParams(onPremisePortalAuth);
+		this.onPremisePortalAuth = onPremisePortalAuth;
+		this.sessionOperations = sessionOperations;
+		this.url = onPremisePortalAuth.url;
+
+		if (onPremisePortalAuth.disableTLSChainValidation) {
+			logger(`DISABLING TLS VALIDATION, session id ${this.harmonySession.sessionId} connecting to ${this.url}`);
+			this.dedicatedHttpAgent = new Agent({ rejectUnauthorized: false });
+		}
+
+		logger(`New premise session started, session id ${this.harmonySession.sessionId} connecting to ${this.url} using user ${onPremisePortalAuth.username}`);
+		await this.performEndpointLogin();
+		this.activateKeepAlive();
+	}
+
+	public async reconnect() {
+		if (!this.workMode) {
+			logger(`No connection established yet`);
+			throw {
+				errorScope: HarmonyErrorScope.SESSION,
+				message: 'No connection established, login first',
+			} as HarmonyError;
+		}
+		logger(`Reconnecting session ${this?.harmonySession?.sessionId}`);
+		await this.disconnect();
+		if (this.workMode === WorkMode.CLOUD) {
+			await this.connectCloud(this.infinityPortalAuth, this.sessionOperations);
+		} else if (this.workMode === WorkMode.SAAS) {
+			await this.connectSaas(this.infinityPortalAuth, this.sessionOperations, this.saaSOptions);
+		} else {
+			await this.connectPremise(this.onPremisePortalAuth, this.sessionOperations);
+		}
+	}
+
+	public async disconnect() {
+		logger(`Disconnecting session ${this?.harmonySession?.sessionId}`);
+		this.connectionStats = SDKConnectionState.DISCONNECTED;
+		if (this.keepAliveInterval) {
+			logger(`Keep-alive interval for session ${this?.harmonySession?.sessionId} cleared`);
+			clearInterval(this.keepAliveInterval);
+			this.keepAliveInterval = undefined;
+		}
+		this.harmonySession = {
+			sessionId: Guid.create().toString(),
+			infinityToken: '',
+		};
+		this.infinityPortalAuth = undefined as any;
+		this.onPremisePortalAuth = undefined as any;
+	}
+
+	public getHarmonySession(): HarmonySession | undefined {
+		return this.harmonySession;
+	}
+
+	//#endregion Publics
+
+	//#region Privates
 
 	private async performEndpointLogin() {
 		try {
@@ -103,15 +230,15 @@ export class SessionManager implements ISessionManager {
 		}
 	}
 
-	private async performMssPLogin() {
+	private async performMsspLogin() {
 		try {
-			logger(`Preforming mssp login to session id ${this?.harmonySession?.sessionId} ...`);
+			logger(`Preforming MSSP login to session id ${this?.harmonySession?.sessionId} ...`);
 			await this.sessionOperations.loginOperation();
-			logger(`Preforming mssp login to session id ${this?.harmonySession?.sessionId} done`);
+			logger(`Preforming MSSP login to session id ${this?.harmonySession?.sessionId} done`);
 
 			this.nextMssPSessionExpiration = Duration.FromMilliseconds(new Date().getTime()).add(MSSP_KEEP_ALIVE_EXPIRATION);
 		} catch (error) {
-			errorLogger(`Failed to login to mssp for session ${this?.harmonySession?.sessionId}, error: ${JSON.stringify(error)}`);
+			errorLogger(`Failed to login to MSSP for session ${this?.harmonySession?.sessionId}, error: ${JSON.stringify(error)}`);
 			this.connectionStats = SDKConnectionState.CONNECTION_ISSUE;
 			throw error;
 		}
@@ -135,6 +262,7 @@ export class SessionManager implements ISessionManager {
 
 			logger(`Preforming CI login to session id ${this?.harmonySession?.sessionId} succeeded`);
 			this.harmonySession!.infinityToken = payload?.data?.token;
+			this.assertBearerIsForEndpoint(this.harmonySession?.infinityToken);
 			this.nextCiExpiration = Duration.FromMilliseconds(new Date().getTime()).add(Duration.FromSeconds(payload?.data?.expiresIn));
 			this.nextEndpointLoginExpiration = undefined;
 		} catch (error) {
@@ -142,6 +270,41 @@ export class SessionManager implements ISessionManager {
 			errorLogger(`Failed to login to CI GW for session "${this?.harmonySession?.sessionId}" url "${authUrl}", error: ${JSON.stringify(parsedError)}`);
 			this.connectionStats = SDKConnectionState.CONNECTION_ISSUE;
 			throw parsedError;
+		}
+	}
+
+	/**
+	 * Assets the given Infinity Portal bearer token is suitable for use with Endpoint
+	 *
+	 * @private
+	 * @param {string} token
+	 * @memberof SessionManager
+	 */
+	private assertBearerIsForEndpoint(token?: string): void {
+		try {
+			if (!token) {
+				errorLogger('No token was given. Will ignore. Requests may fail');
+				return;
+			}
+
+			const decoded: JwtPayload & { appId?: string } = jsonwebtoken.decode(token) as JwtPayload;
+			if (!decoded?.appId) {
+				errorLogger('Could not determine target application ID from bearer token. Will ignore. Requests may fail');
+				return;
+			}
+
+			const endpointAppId = '12345678-8888-1234-1234-123456789123';
+			if (decoded.appId !== endpointAppId) {
+				errorLogger(`Target application is incorrect - expected '${endpointAppId}' but got '${decoded.appId}'. Throwing`);
+				throw {
+					errorScope: HarmonyErrorScope.INVALID_PARAMS,
+					message:
+						"The provided API key must be for the 'Endpoint' service." +
+						'Please refer to the documentation at https://app.swaggerhub.com/apis/Check-Point/web-mgmt-external-api-production for more details',
+				} as HarmonyError;
+			}
+		} catch (err) {
+			errorLogger('Could not decode bearer token. Will ignore. Requests may fail');
 		}
 	}
 
@@ -230,10 +393,6 @@ export class SessionManager implements ISessionManager {
 			logger(`Preforming keepalive to session id ${this?.harmonySession?.sessionId} done`);
 			this.keepAliveRunning = false;
 		}
-	}
-
-	public connectionState(): SDKConnectionState {
-		return this.connectionStats;
 	}
 
 	private validateCloudParams(infinityPortalAuth: InfinityPortalAuth): void {
@@ -352,98 +511,5 @@ export class SessionManager implements ISessionManager {
 		}, KEEP_ALIVE_INTERVAL.Milliseconds);
 	}
 
-	public async connectCloud(infinityPortalAuth: InfinityPortalAuth, sessionOperations: SessionOperations) {
-		this.workMode = WorkMode.CLOUD;
-		this.validateCloudParams(infinityPortalAuth);
-
-		this.infinityPortalAuth = infinityPortalAuth;
-		this.sessionOperations = sessionOperations;
-
-		this.url = infinityPortalAuth.gateway || CI_GATEWAY[RUNNING_ENV][infinityPortalAuth?.region || InfinityPortalRegion.EU_IRELAND];
-
-		logger(`New cloud session started, session id ${this.harmonySession.sessionId} connecting to ${this.url} using client id ${infinityPortalAuth.clientId}`);
-
-		await this.performCiLogin();
-		await this.performEndpointLogin();
-		this.activateKeepAlive();
-	}
-
-	public async connectSaas(infinityPortalAuth: InfinityPortalAuth, sessionOperations: SessionOperations, saaSOptions: HarmonyEndpointSaaSOptions) {
-		this.saaSOptions = saaSOptions;
-		this.sessionOperations = sessionOperations;
-		this.workMode = WorkMode.SAAS;
-		this.validateCloudParams(infinityPortalAuth);
-
-		this.infinityPortalAuth = infinityPortalAuth;
-
-		this.url = infinityPortalAuth.gateway || CI_GATEWAY[RUNNING_ENV][infinityPortalAuth?.region || InfinityPortalRegion.EU_IRELAND];
-
-		logger(
-			`New saas session started *${this.saaSOptions.activateMssPSession ? 'with' : 'without'}* MSSP session mgmt, session id ${
-				this.harmonySession.sessionId
-			} connecting to ${this.url} using client id ${infinityPortalAuth.clientId}`
-		);
-
-		await this.performCiLogin();
-		if (this.saaSOptions.activateMssPSession) {
-			await this.performMssPLogin();
-		}
-		this.activateKeepAlive();
-	}
-
-	public async connectPremise(onPremisePortalAuth: OnPremisePortalAuth, sessionOperations: SessionOperations) {
-		this.workMode = WorkMode.PREMISE;
-		this.validatePremiseParams(onPremisePortalAuth);
-		this.onPremisePortalAuth = onPremisePortalAuth;
-		this.sessionOperations = sessionOperations;
-		this.url = onPremisePortalAuth.url;
-
-		if (onPremisePortalAuth.disableTLSChainValidation) {
-			logger(`DISABLING TLS VALIDATION, session id ${this.harmonySession.sessionId} connecting to ${this.url}`);
-			this.dedicatedHttpAgent = new Agent({ rejectUnauthorized: false });
-		}
-
-		logger(`New premise session started, session id ${this.harmonySession.sessionId} connecting to ${this.url} using user ${onPremisePortalAuth.username}`);
-		await this.performEndpointLogin();
-		this.activateKeepAlive();
-	}
-
-	public async reconnect() {
-		if (!this.workMode) {
-			logger(`No connection established yet`);
-			throw {
-				errorScope: HarmonyErrorScope.SESSION,
-				message: 'No connection established, login first',
-			} as HarmonyError;
-		}
-		logger(`Reconnecting session ${this?.harmonySession?.sessionId}`);
-		await this.disconnect();
-		if (this.workMode === WorkMode.CLOUD) {
-			await this.connectCloud(this.infinityPortalAuth, this.sessionOperations);
-		} else if (this.workMode === WorkMode.SAAS) {
-			await this.connectSaas(this.infinityPortalAuth, this.sessionOperations, this.saaSOptions);
-		} else {
-			await this.connectPremise(this.onPremisePortalAuth, this.sessionOperations);
-		}
-	}
-
-	public async disconnect() {
-		logger(`Disconnecting session ${this?.harmonySession?.sessionId}`);
-		this.connectionStats = SDKConnectionState.DISCONNECTED;
-		if (this.keepAliveInterval) {
-			logger(`Keep-alive interval for session ${this?.harmonySession?.sessionId} cleared`);
-			clearInterval(this.keepAliveInterval);
-			this.keepAliveInterval = undefined;
-		}
-		this.harmonySession = {
-			sessionId: Guid.create().toString(),
-			infinityToken: '',
-		};
-		this.infinityPortalAuth = undefined as any;
-		this.onPremisePortalAuth = undefined as any;
-	}
-
-	public getHarmonySession(): HarmonySession | undefined {
-		return this.harmonySession;
-	}
+	//#endregion Privates
 }
