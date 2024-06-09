@@ -298,7 +298,7 @@ __metadata:
     time-stamp: ^2.2.0
     ts-node: ^10.9.1
     typescript: ^4.3.4
-    unitsnet-js: ^1.0.106
+    unitsnet-js: ^2.2.4
   languageName: unknown
   linkType: soft
 
@@ -5438,10 +5438,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unitsnet-js@npm:^1.0.106":
-  version: 1.0.130
-  resolution: "unitsnet-js@npm:1.0.130"
-  checksum: 5fd50f1feb3c467e0d8a8abb9c829bdacd35937186be8a68c2c808f302f6c7106b746fd663e25c2588244acc499b5d911d65a0d6c8f162eb9d4adebb3ca4079c
+"unitsnet-js@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "unitsnet-js@npm:2.2.4"
+  checksum: 9f05a816629729e5c62be36114180bb2bf4782e0ddf0614709d8cf431db3a1d75f6d88df624e8a5b3d9d17d523afe0a30f50f4f97c9f2a60e17d91bb3595920e
   languageName: node
   linkType: hard
 

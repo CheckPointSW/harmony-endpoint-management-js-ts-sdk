@@ -22,19 +22,6 @@ With the SDK, you do not have to manage log in, send keep alive requests, worry 
 
 > 💡 The Harmony Endpoint SDK supports simultaneous instances with different tenants.
 
----
-🚧🚧🚧 
-
-**Note that the SDK package is in Early Availability (EA). Use with caution, as it may undergo changes and improvements. Feedback and contributions are highly encouraged.** 
-
-To report a bug, please go to [Report Bug](#-report-bug)
-
-For feedback, please get in touch with us at [Check Point Software Technologies Ltd.](mailto:harmony-endpoint-external-api@checkpoint.com)
-
-🚧🚧🚧 
-
----
-
 ## ⬇️ SDK installation
 
 To start using this SDK, add the SDK package to your project

@@ -1,6 +1,6 @@
 {
   "name": "@chkp/harmony-endpoint-management-sdk",
-  "version": "1.1.68",
+  "version": "1.1.85",
   "description": "The official Harmony Endpoint management SDK for JavaScript ecosystem",
   "main": "dist/index.js",
   "files": [
@@ -55,7 +55,7 @@
     "jsonwebtoken": "^9.0.2",
     "node-fetch": "^2.6.6",
     "time-stamp": "^2.2.0",
-    "unitsnet-js": "^1.0.106"
+    "unitsnet-js": "^2.2.4"
   },
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "^2.7.0",
