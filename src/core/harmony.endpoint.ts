@@ -7,10 +7,6 @@ import { HarmonyEndpointSaaSOptions, InfinityPortalAuth } from '../interfaces/in
 
 export class HarmonyEndpoint extends HarmonyEndpointCloudBase {
 	constructor() {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`This package is currently in EA (Early Availability) stage. Use with caution, as it may undergo significant changes and improvements. Feedback and contributions are highly encouraged. To report a bug, please go to https://github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk/issues or contact us at harmony-endpoint-external-api@checkpoint.com`
-		);
 		super('HarmonyEndpoint');
 	}
 
@@ -24,10 +20,6 @@ export class HarmonyEndpoint extends HarmonyEndpointCloudBase {
 
 export class HarmonyEndpointSaaS extends HarmonyEndpointSaasBase {
 	constructor() {
-		// eslint-disable-next-line no-console
-		console.warn(
-			`This package is currently in EA (Early Availability) stage. Use with caution, as it may undergo significant changes and improvements. Feedback and contributions are highly encouraged. To report a bug, please go to https://github.com/CheckPointSW/harmony-endpoint-management-js-ts-sdk/issues or contact us at harmony-endpoint-external-api@checkpoint.com`
-		);
 		super('HarmonyEndpointSaaS');
 	}
 
@@ -46,10 +38,6 @@ export class HarmonyEndpointSaaS extends HarmonyEndpointSaasBase {
 // TODO: Open when on-premise will be release to public
 // export class HarmonyEndpointPremise extends HarmonyEndpointPremiseBase {
 // 	constructor() {
-// 		// eslint-disable-next-line no-console
-// 		console.warn(
-// 			`This API is currently under development. Please make sure you know what you are doing!!! For any question contact us at harmony-endpoint-external-api@checkpoint.com`
-// 		);
 // 		super('HarmonyEndpointPremise');
 // 	}
 
